@@ -1,0 +1,56 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file: .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - NODE_ENV=development
+    networks:
+      - zdravmost-network
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: zdrav
+      POSTGRES_PASSWORD: zdrav
+      POSTGRES_DB: zdrav
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - zdravmost-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - zdravmost-network
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web interface
+    networks:
+      - zdravmost-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  zdravmost-network:
+    driver: bridge
