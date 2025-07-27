@@ -103,20 +103,20 @@ jobs:
           fi
           
           # Stop existing containers
-          sudo docker-compose down || true
+          sudo docker-compose -f docker-compose.prod.yml down || true
           
           # Build and start containers
-          sudo docker-compose build
-          sudo docker-compose up -d
+          sudo docker-compose -f docker-compose.prod.yml build
+          sudo docker-compose -f docker-compose.prod.yml up -d
           
           # Wait for services to be ready
           sleep 30
           
           # Run database migrations
-          sudo docker-compose exec -T api npm run migration:run || true
+          sudo docker-compose -f docker-compose.prod.yml exec -T api npm run migration:run || true
           
           # Check if services are running
-          sudo docker-compose ps
+          sudo docker-compose -f docker-compose.prod.yml ps
           
           echo "Deployment completed successfully!"
         ENDSSH
