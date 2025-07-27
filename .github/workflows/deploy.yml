@@ -96,6 +96,12 @@ jobs:
             cd zdravmost-backend
           fi
           
+          # Create .env file if it doesn't exist
+          if [ ! -f ".env" ]; then
+            cp .env.example .env
+            echo "Created .env file from example"
+          fi
+          
           # Stop existing containers
           sudo docker-compose down || true
           
